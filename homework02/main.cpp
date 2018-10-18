@@ -5,14 +5,14 @@
 #include <QString>
 #include <QCoreApplication>
 
-struct studData{
+struct studData{//定义学生数据结构体
 private:
     QString id;
     QString name;
     QString subj;
 public:
     studData();
-    friend QDebug operator << (QDebug d,const studData &data);
+    friend QDebug operator << (QDebug d,const studData &data);//重载“<<”使其可以直接输出stuData结构体
     friend class myCmp;
     friend class ScoreSorter;
 };
