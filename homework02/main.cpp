@@ -27,7 +27,6 @@ QDebug operator << (QDebug d,const studData &data){
     return d;
 }
 
-// 比较类，用于std::sort第三个参数
 class myCmp {
 public:
     myCmp(int selectedColumn) { this->currentColumn = selectedColumn; }
