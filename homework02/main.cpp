@@ -29,7 +29,7 @@ QDebug operator << (QDebug d,const studData &data){
 
 class myCmp {
 public:
-    myCmp(int selectedColumn) { this->currentColumn = selectedColumn; }
+    myCmp(int selectedColumn) { this->currentColumn = selectedColumn; }//重载sort比较规则，参数为所需排序的列数
     bool operator() (const studData& d1,const studData& d2);
 private:
     int currentColumn;
@@ -56,14 +56,13 @@ class ScoreSorter
 {
 public:
     ScoreSorter(QString dataFile);
-    void readFile();
-    void doSort(int j);
-    void myMessageOutput();
-    friend QDebug operator << (QDebug d,const studData &data);
+    void readFile();//读取数据文件并在控制台shuchu
+    void doSort(int j);//对所读取文件排序
+    void myMessageOutput();//将排序后的数据写入文本
 private:
     QVector<studData> stuList;
-    QString Filepath;
-    QString title;
+    QString Filepath;//数据文件的路径
+    QString title;//数据的表头
 };
 
 ScoreSorter::ScoreSorter(QString dataFile)
@@ -78,6 +77,7 @@ void ScoreSorter::readFile(){
         return;
     }
         title=file.readLine();
+        title=title.replace(QRegExp("[\\s]+"),"      ");
         title=title.trimmed();
         qDebug()<<title;
     while( file.atEnd() == 0 ){
@@ -85,8 +85,9 @@ void ScoreSorter::readFile(){
         str = file.readLine();
         str=str.replace(QRegExp("[\\s]+"), "    ");
         stu.id=str.section("    ",0,0);
-        stu.name=str.section("    ",1,1);;
+        stu.name=str.section("    ",1,1);
         stu.subj=str.section("    ",2,7);
+        stu.subj=stu.subj.replace(QRegExp("[\\s]+"),"         ");
         stuList<<stu;
     }
 }
@@ -102,13 +103,14 @@ void ScoreSorter::doSort(int j){
 }
 
     void ScoreSorter::myMessageOutput(){
-    // 输出信息至文件中（读写、追加形式）
     QFile file("sorted_"+this->Filepath);
     file.open(QIODevice::ReadWrite | QIODevice::Append);
     QTextStream output(&file);
     output.setCodec("UTF-8");  //编码方式
+    output.setFieldWidth(4);
     int num=stuList.size();
     output<<title;
+    output<<"\r\n";
     for(int i=0; i<num;i++){
         output<<stuList[i].id<<stuList[i].name<<"\t\t"<<stuList[i].subj;
         output<<"\r\n";
